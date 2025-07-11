@@ -1,9 +1,9 @@
 name: Call Render Tee Time Check
 
-# Run on a schedule: every 15 minutes
 on:
   schedule:
     - cron: '*/15 * * * *'  # every 15 minutes
+  workflow_dispatch:       # allows manual trigger from GitHub UI
 
 jobs:
   call_render_check:
@@ -11,7 +11,7 @@ jobs:
 
     steps:
       - name: Random delay up to 15 minutes
-        run: sleep $(( RANDOM % 900 ))  # sleep random seconds between 0 and 900 (15 minutes)
+        run: sleep $(( RANDOM % 900 ))  # random sleep 0-900 seconds
 
       - name: Call Render /run_check endpoint
         run: curl -s https://golfnow-1.onrender.com/run_check
