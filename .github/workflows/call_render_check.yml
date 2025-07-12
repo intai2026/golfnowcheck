@@ -3,16 +3,22 @@ name: Call Render Tee Time Check
 on:
   schedule:
     - cron: '*/5 * * * *'  # every 5 minutes
-  workflow_dispatch:       # allows manual trigger from GitHub UI
+  workflow_dispatch:       # manual trigger from GitHub UI
 
 jobs:
   call_render_check:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Random delay up to 15 minutes
-        run: sleep $(( RANDOM % 900 ))  # random sleep 0-900 seconds
+      - name: Random delay up to 1 minute
+        run: sleep $(( RANDOM % 60 ))  # random sleep 0-59 seconds
 
       - name: Call Render /run_check endpoint
-        run: curl -s https://golfnow-1.onrender.com/run_check
+        run: |
+          response=$(curl -s -w "%{http_code}" -o /dev/null https://golfnow-1.onrender.com/run_check)
+          echo "Render response code: $response"
+          if [ "$response" -ne 200 ]; then
+            echo "Request failed"
+            exit 1
+          fi
 
